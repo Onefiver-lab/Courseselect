@@ -1,0 +1,5 @@
+# 忽略 Qt Creator 配置目录（末尾必须加 /）
+.qtcreator/
+
+# 忽略构建产物目录（末尾必须加 /）
+build/
