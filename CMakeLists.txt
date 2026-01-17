@@ -11,12 +11,18 @@ project(Courseselect LANGUAGES CXX)
 add_executable(Courseselect
     #math.cpp                              # 模块实现单元
     main.cpp
+
+
 )
 
 # 定义用户管理相关模块文件集合
 set(UserManage_FILES
     #${MODULE_LIB_DIR1}/utils.cppm         #添加模块库的模块接口单元
     #math.cppm                             # 模块接口单元
+    student.cppm
+    teacher.cppm
+    teachingsecretary.cppm
+    user.cppm
 )
 
 # 定义课程管理相关模块文件集合
