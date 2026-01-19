@@ -18,8 +18,8 @@ add_executable(Courseselect
 set(domain_FILES
     #${MODULE_LIB_DIR1}/utils.cppm         #添加模块库的模块接口单元
     #math.cppm                             # 模块接口单元
-    major.cppm
-    entity.cpp
+
+    entity.cppm
 
 )
 
@@ -35,8 +35,8 @@ set(database_FILES
 set(controller_FILES
     #${MODULE_LIB_DIR1}/utils.cppm         #添加模块库的模块接口单元
     #math.cppm                             # 模块接口单元
-    registration.cppm
-    registrar.cpp
+
+    registrar.cppm
 )
 
 
