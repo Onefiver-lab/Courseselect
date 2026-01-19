@@ -1,8 +1,8 @@
 export module registrar:datamanager_interface;
-import :entity; // 仅导入公共模块
+import :entity;
 import std;
 
-// 前向声明秘书类（无需完整导入模块）
+
 export class Secretary;
 using SharedSecretary = std::shared_ptr<Secretary>;
 
