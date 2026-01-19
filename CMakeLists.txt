@@ -16,6 +16,8 @@ add_executable(Courseselect
     interface.cppm
     major.cppm
 
+
+
 )
 
 # 定义用户管理相关模块文件集合
@@ -42,6 +44,8 @@ set(Registration_FILES
     #math.cppm                             # 模块接口单元
     registration.cppm
     iregistrar.cppm
+    datamanager_memery.cppm
+    datamanager_interface.cpp
 )
 
 # 定义系统相关模块文件集合
