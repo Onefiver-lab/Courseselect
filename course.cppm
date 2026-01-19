@@ -1,46 +1,66 @@
-export module course;
+export module registrar:course;
 
-import <string>;
-import <vector>;
-import <memory>;
-
+import std;
 using std::string;
 using std::vector;
-using std::shared_ptr;
-using std::move;
-using std::any_of;
-
-export class Student;
+using std::format;
+using std::map;
 
 export class Course {
 public:
-    string code;
-    string title;
-    int credit_value;
-    vector<shared_ptr<Course>> required_prerequisites;
+    Course(string id, string name, int credits);
+    string info() const;
+    void addStudent(class Student* student);
+    void setTeacher(class Teacher* teacher);
+    void assignGrade(class Student* student, string grade);
+    string getGrade(Student* student) const;
+    bool hasId(string id) const;
+    Teacher* getTeacher() const;
+    vector<Student*> getStudents() const;
+    string getId() const;
+    string getName() const;
+    int getCredits() const;
 
-public:
-    Course(string course_code, string course_title, int credits)
-        : code(move(course_code)), title(std::move(course_title))
-        , credit_value(credits) {}
-
-    virtual ~Course() = default;
-
-    virtual bool is_student_eligible(const Student& student) const = 0;
-
-    void add_prerequisite(shared_ptr<Course> prerequisite_course) {
-        required_prerequisites.push_back(prerequisite_course);
-    }
-
-    bool has_prerequisites() const {
-        return !required_prerequisites.empty();
-    }
-
-    bool is_prerequisite_for(const Course& other) const {
-        return any_of(other.required_prerequisites.begin(),
-                          other.required_prerequisites.end(),
-                          [this](const auto& prereq) {
-                              return prereq->code == this->code;
-                          });
-    }
+private:
+    string m_id;
+    string m_name;
+    int m_credits;
+    Teacher* m_teacher{nullptr};
+    vector<Student*> m_students;
+    map<Student*, string> m_grades; // 学生-成绩映射
 };
+
+Course::Course(string id, string name, int credits)
+    : m_id(id), m_name(name), m_credits(credits) {}
+
+string Course::info() const {
+    string teacherInfo = m_teacher ? m_teacher->info() : "无授课教师";
+    return format("课程ID: {}, 名称: {}, 学分: {}, 授课教师: {}\n",
+                  m_id, m_name, m_credits, teacherInfo);
+}
+
+void Course::addStudent(Student* student) {
+    m_students.push_back(student);
+    student->enrollIn(this);
+}
+
+void Course::setTeacher(Teacher* teacher) {
+    m_teacher = teacher;
+    teacher->addCourse(this);
+}
+
+void Course::assignGrade(Student* student, string grade) {
+    m_grades[student] = grade;
+}
+
+string Course::getGrade(Student* student) const {
+    auto it = m_grades.find(student);
+    return it != m_grades.end() ? it->second : "未评定";
+}
+
+bool Course::hasId(string id) const { return m_id == id; }
+Teacher* Course::getTeacher() const { return m_teacher; }
+vector<Student*> Course::getStudents() const { return m_students; }
+string Course::getId() const { return m_id; }
+string Course::getName() const { return m_name; }
+int Course::getCredits() const { return m_credits; }

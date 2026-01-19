@@ -1,74 +1,46 @@
-export module teacher;
+export module registrar:teacher;
+import :course;
+import :student;
+import std;
+using std::string;
+using std::vector;
+using std::format;
+using std::find;
 
-import user;
-import courseselection;
-import <vector>;
-import <memory>;
-import <string>;
-import <print>;
-import <algorithm>;
-
-export class Teacher : public User {
+export class Teacher {
 public:
-    std::string employee_number;
-    std::vector<std::shared_ptr<CourseSelection>> teaching_sessions;
+    Teacher(string id, string name);
+    string info() const;
+    bool hasId(string id) const;
+    void addCourse(Course* course);
+    bool gradeStudent(Course* course, Student* student, string grade);
+    vector<Course*> getCourses() const;
+    string getName() const;
+    string getId() const;
 
-public:
-    Teacher(std::string user_id, std::string user_name, std::string password, std::string emp_num);
-
-    void view_teaching_courses();
-    void manage_students(const std::string& course_id);
-    bool input_grades(const std::string& student_id, const std::string& course_id,
-                     const std::string& grade);
-    bool set_capacity(const std::string& section_id, int capacity);
-    void show_dashboard() override;
-    void add_teaching_session(std::shared_ptr<CourseSelection> session);
+private:
+    string m_id;
+    string m_name;
+    vector<Course*> m_courses;
 };
 
+Teacher::Teacher(string id, string name) : m_id(id), m_name(name) {}
 
-Teacher::Teacher(std::string user_id, std::string user_name, std::string password, std::string emp_num)
-    : User(std::move(user_id), std::move(user_name), std::move(password))
-    , employee_number(std::move(emp_num)) {}
-
-void Teacher::view_teaching_courses() {
-    std::print("\n=== Teaching Courses ===\n");
-    for (const auto& session : teaching_sessions) {
-        std::print("{} ({})\n", session->course->title, session->section_code);
-    }
+string Teacher::info() const {
+    return format("教师ID: {}, 姓名: {}", m_id, m_name);
 }
 
-void Teacher::manage_students(const std::string& course_id) {
-    std::print("{} managing students for course: {}\n", name, course_id);
-}
+bool Teacher::hasId(string id) const { return m_id == id; }
+void Teacher::addCourse(Course* course) { m_courses.push_back(course); }
 
-bool Teacher::input_grades(const std::string& student_id, const std::string& course_id,
-                          const std::string& grade) {
-    std::print("Grade {} recorded for student {} in course {}\n", grade, student_id, course_id);
+bool Teacher::gradeStudent(Course* course, Student* student, string grade) {
+    if (course->getTeacher() != this) return false;
+    auto& students = course->getStudents();
+    if (find(students.begin(), students.end(), student) == students.end()) return false;
+    course->assignGrade(student, grade);
     return true;
 }
 
-bool Teacher::set_capacity(const std::string& section_id, int capacity) {
-    auto it = std::find_if(teaching_sessions.begin(), teaching_sessions.end(),
-        [&section_id](const auto& session) {
-            return session->section_code == section_id;
-        });
-
-    if (it != teaching_sessions.end()) {
-        (*it)->max_students = capacity;
-        std::print("Capacity set to {} for section {}\n", capacity, section_id);
-        return true;
-    }
-    return false;
-}
-
-void Teacher::show_dashboard() {
-    std::print("\n=== Teacher Dashboard ===\n");
-    std::print("Teacher: {}\n", name);
-    std::print("Employee Number: {}\n", employee_number);
-    std::print("Teaching Sessions: {}\n", teaching_sessions.size());
-}
-
-void Teacher::add_teaching_session(std::shared_ptr<CourseSelection> session) {
-    teaching_sessions.push_back(session);
-    std::print("{} added to teach {}\n", name, session->course->title);
-}
+vector<Course*> Teacher::getCourses() const { return m_courses; }
+string Teacher::getName() const { return m_name; }
+string Teacher::getId() const { return m_id; }
