@@ -1,2 +1,0 @@
-# Courseslect
-c++ training
